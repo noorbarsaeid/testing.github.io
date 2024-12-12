@@ -1,4 +1,4 @@
-name: Publish Quarto Site
+name: Render and Publish Quarto
 
 on:
   push:
@@ -6,14 +6,21 @@ on:
       - main
 
 jobs:
-  publish:
+  render:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: quarto-dev/quarto-actions/setup@v2
-      - name: Render and Publish
+
+      - name: Restore R Dependencies
         run: |
-          quarto render
-          quarto publish
-        env:
-          QUARTO_PUBLISH_TOKEN: ${{ secrets.QUARTO_PUBLISH_TOKEN }}
+          Rscript -e "install.packages('renv')"
+          Rscript -e "renv::restore()"
+
+      - name: Install Required R Packages
+        run: |
+          Rscript -e "install.packages('rmarkdown')"
+          Rscript -e "install.packages('knitr')"
+
+      - name: Render Quarto Project
+        run: quarto render
