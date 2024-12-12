@@ -1,7 +1,6 @@
 ---
 title: "testing.github.io"
-project: 
-type: website
+
 ---
 
 This is a Quarto website.
